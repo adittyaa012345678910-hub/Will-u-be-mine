@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine 🌹</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background: radial-gradient(circle at top,#ffd6e8,#f7a8c7);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Georgia,serif;
+  overflow:hidden;
+}
+
+.box{
+  text-align:center;
+  width:min(92vw,520px);
+}
+
+.box img{
+  width:100%;
+  border-radius:16px;
+  box-shadow:0 25px 55px rgba(0,0,0,.35);
+}
+
+.question{
+  margin:18px 0;
+  font-size:22px;
+  color:#5a2135;
+}
+
+/* BUTTON AREA */
+.btns{
+  position:relative;
+  height:100px;
+  width:100%;
+}
+
+/* BUTTON BASE */
+button{
+  border:none;
+  padding:12px 26px;
+  border-radius:24px;
+  font-size:16px;
+  cursor:pointer;
+  position:absolute;
+  transition:transform .08s linear;
+}
+
+.yes{
+  left:20%;
+  background:#ff4d7a;
+  color:white;
+}
+
+.no{
+  left:60%;
+  background:#eee;
+}
+
+/* FINAL TEXT */
+.final{
+  margin-top:16px;
+  font-size:18px;
+  color:#5a2135;
+  opacity:0;
+  transition:.4s;
+}
+
+/* ROSES */
+.rose{
+  position:fixed;
+  width:26px;
+  pointer-events:none;
+  animation:fall linear forwards;
+}
+
+@keyframes fall{
+  from{ transform:translateY(-40px) rotate(0); opacity:1;}
+  to{ transform:translateY(110vh) rotate(360deg); opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <img id="mainImg" src="ask.png">
+  <div class="question">Will you be my Valentine? 🌹</div>
+
+  <div class="btns" id="btnArea">
+    <button class="yes" id="yesBtn">Yes 💘</button>
+    <button class="no" id="noBtn">No 🙈</button>
+  </div>
+
+  <div id="finalText" class="final">
+    There was never a choice, cutie…  
+    You’re stuck with me now 💗  
+    You are my Valentine 🌹
+  </div>
+</div>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const img = document.getElementById("mainImg");
+const finalText = document.getElementById("finalText");
+const btnArea = document.getElementById("btnArea");
+
+let offsetX = 0;
+let offsetY = 0;
+let scale = 1;
+
+/* SAFE MOVE INSIDE BUTTON AREA */
+function moveNo(){
+
+  const area = btnArea.getBoundingClientRect();
+  const btn = noBtn.getBoundingClientRect();
+
+  const maxX = area.width - btn.width - 10;
+  const maxY = area.height - btn.height - 10;
+
+  offsetX = Math.random() * maxX;
+  offsetY = Math.random() * maxY;
+
+  noBtn.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+
+  /* shrink but never vanish */
+  if(scale > 0.6){
+    scale *= 0.97;
+  }
+}
+
+/* CURSOR REPEL */
+document.addEventListener("mousemove", e=>{
+  const r = noBtn.getBoundingClientRect();
+  const dist = Math.hypot(e.clientX-r.left, e.clientY-r.top);
+
+  if(dist < 110){
+    moveNo();
+  }
+});
+
+/* MOBILE DODGE */
+noBtn.addEventListener("touchstart", e=>{
+  e.preventDefault();
+  moveNo();
+});
+
+/* YES CLICK */
+yesBtn.onclick = ()=>{
+  img.src="final.png";
+  btnArea.style.display="none";
+  finalText.style.opacity=1;
+  rainRoses();
+};
+
+/* ROSE RAIN */
+function rainRoses(){
+  for(let i=0;i<30;i++){
+    const r=document.createElement("img");
+    r.src="rose.png";
+    r.className="rose";
+    r.style.left=Math.random()*100+"vw";
+    r.style.animationDuration=(3+Math.random()*3)+"s";
+    document.body.appendChild(r);
+    setTimeout(()=>r.remove(),6000);
+  }
+}
+</script>
+
+</body>
+</html>
